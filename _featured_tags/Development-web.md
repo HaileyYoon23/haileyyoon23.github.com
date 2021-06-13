@@ -1,8 +1,8 @@
 ---
 layout: tag-blog
-title: Statistics & R
+title: Wev
 slug: r
-category: dev
+category: Development
 menu: false
 order: 1
 ---
