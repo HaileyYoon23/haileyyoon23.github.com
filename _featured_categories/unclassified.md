@@ -1,10 +1,10 @@
 ---
 layout: list
-title: Unclassified
-slug: unclassified
+title: Life
+slug: Life
 menu: true
 submenu: false
 order: 5
 description: >
-  경제. 취미. 그 외 살면서 필요한 기타 문서.
+  개발을 품는 중인 삶. 전체.
 ---
