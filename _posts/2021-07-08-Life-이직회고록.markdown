@@ -26,7 +26,8 @@ header-img: img/life/turnover_celebrate.JPG
 
 #### 첫 번째 회사
 
-![continental](../assets/img/life/continental_logo.png)
+<img width="480" alt="continental_logo" src="https://user-images.githubusercontent.com/35250492/124850991-a2ad5600-dfdc-11eb-89d9-190ac33f6e49.png">
+
 
 
 
@@ -36,15 +37,12 @@ header-img: img/life/turnover_celebrate.JPG
 
 
 
-담당 업무	: Transmission Application Architecture & QA
+* 담당 업무	: Transmission Application Architecture & QA
 
-프로젝트	- 유압 펌프
-
-​		         - 변속 패턴
-
-​		         - SBW System
-
-​		         - 그 외 …
+* 프로젝트 유압 펌프
+  * 변속 패턴
+  * SBW System
+  * 그 외 …
 
 
 
@@ -80,7 +78,11 @@ QA 또한 재미있는 점이 많다. 내가 설계한 System의 작업물을 (S
 
 
 
+
+
+
 ---
+
 
 
 
@@ -88,7 +90,8 @@ QA 또한 재미있는 점이 많다. 내가 설계한 System의 작업물을 (S
 
 #### 두 번째 회사
 
-![continental](../assets/img/life/skhynix_logo.png)
+<img width="400" alt="skhynix_logo" src="https://user-images.githubusercontent.com/35250492/124851012-a9d46400-dfdc-11eb-8636-361fb8496e9b.png">
+
 
 
 
@@ -98,11 +101,13 @@ QA 또한 재미있는 점이 많다. 내가 설계한 System의 작업물을 (S
 
 
 
-담당 업무	: Mobile UFS FTL 
+* 담당 업무	: Mobile UFS FTL 
 
-프로젝트	   Map & Cache 개발 
+* 프로젝트
+  * Map & Cache 개발 
+  * (보안상 자세히 쓰지 않겠다)
 
-​		            (보안상 자세히 쓰지 않겠다)
+
 
 느낀점
 
