@@ -2,7 +2,7 @@
 
 layout: post  
 
-title: "이직회고록"  
+title: "퇴사 회고록"  
 
 subtitle: "성장을 위하여"  
 
