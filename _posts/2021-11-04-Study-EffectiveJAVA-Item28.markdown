@@ -2,13 +2,13 @@
 
 layout: post  
 
-title: "Effective JAVA, Item 26"  
+title: "Effective JAVA, Item 28"  
 
-subtitle: "로타입(Raw Type)은 사용하지 말라"  
+subtitle: "배열보다는 리스트를 사용하라"  
 
 categories: Study  
 
-tags: EffectiveJAVA Item26
+tags: EffectiveJAVA Item28
 
 comments: true  
 
@@ -16,185 +16,138 @@ header-img:
 
 ---
 
-# 5장 제너릭 Generic
-> 형 변환 오류를 막는 제너릭을 잘 활용할 수 있는 방법.
+## ITEM 28 배열보다는 리스트를 사용하라
 
-<br/>
+### 배열은 공변, 제너릭은 불공변이다.
 
-| 한글 용어  | 영문 용어 | example |
-|:-------------:|:-------------:|:-------------:|
-|매개변수화 타입|parameterized type|List&#60;String>|
-|실제 타입 매개변수|actual type parameter|String|
-|제네릭 타입|generic type|List&#60;E>|
-|정규 타입 매개변수|formal type parameter|E|
-|비한정적 와일드카드 타입|unbounded wildcard type|List&#60;?>|
-|로 타입|raw type|List|
-|한정적 타입 매개변수|bounded type parameter|&#60;E extends Number>|
-|재귀적 타입 한정|recursive type bound|&#60;T extends Comparable&#60;T>>|
-|한정적 와일드카드 타입|bounded wildcard type|List&#60;? extends Number>|
-|제네릭 메서드|generic method|static &#60;E> List&#60;E> as List(E[] a)|
-|타입 토큰|type token|String.class|
+공변이란, 자기 자신과 자식 객체로 타입 변환을 허용해주는 것이다.
+``` java
+Object[] objects = new Long[2];
+```
 
+불공변이란, 두 타입이 전혀 관련없음을 의미한다.
+``` java
+List<String> strings = new ArrayList<>();
+function(strings)   // Compile Error
 
-## ITEM 26 로(Raw) 타입은 사용하지 말라
-
-### 제네릭 타입 이란
-> 선언에 타입 매개변수가 사용된 클래스, 인터페이스.
-
-
-
-<br/>
-
-```java
-public interface List<E> extends Collection<E> {
-    int size();
-    boolean isEmpty();
-    boolean contains(Object o);
-    Iterator<E> iterator();
-    Object[] toArray();
-    
+public static void function(List<Object> objects) {
     ...
 }
 ```
-List&#60;String> 로 선언 시 내부에서는 코드의 **E** 부분이 String 으로 타입이 통용되며, 타입이 클래스 외부에서 사용자에 의해 지정되도록 한다
 
 <br/>
 
-
-### 로타입은 제너릭 마이그레이션 지원을 위해 존재한다
-
+제네릭은 불공변이다. 따라서, 배열과는 달리 런타임이 아닌 컴파일 단계에서 오류가 발생하므로, 런타임시에 타입 안정성을 가질 수 있다.  
 ``` java
-private final List list;
+Object[] objectArray = new Long[1];
+objectArray[0] = "타입이 달라 넣을 수 없다."; // ArrayStoreException 을 던짐. 
 ```
-
-로(Raw) 타입이란, 제너릭 타입에서 타입 매개변수를 전혀 사용하지 않은 상태의 타입을 말한다.  
-
-자바가 제네릭을 받아들이기까지 거의 10년이 걸렸기 때문에, 많은 코드들이 제네릭 없이 생성이 되었다.   
-로타입을 지원하는 것은, 제너릭이 없는 코드와의 호환성 때문.  
-
-
-### 로타입은 코드를 불안정하게 한다
-  런타임보다 컴파일 시에 에러를 잡을 수 있는 코드가 더 안전한 코드라고 할 수 있다. 로타입을 사용하면 런타임에 예외가 일어날 수 있다.  
-  따라서 로타입은 코드를 불안정하게 한다고 할 수  있다.  
+위 코드는 배열의 공변 성질로 인해 컴파일은 되지만 런타임에 에러가 발생한다.
 ``` java
-// Stamp 인스턴스만 취급한다.
-private final Collection stamps = ...;
-
-...
-
-// [warning] unchecked call ...
-stamps.add(new Coin(...)); 
-
-// [Error] ClassCastException
-for (Iterator i = stamps.iterator(); i.hasNext(); ) {
-    Stamp stamp = (Stamp) i.next();
-    stamp.cancel();
-}
+List<Object> ol = new ArrayList<Long>(); // 호환되지 않는 타입이다.
+ol.add("타입이 달라 넣을 수 없다.);
 ```
+위 코드는 제너릭의 불공변 성질로 인해 컴파일 단계에서 문제가 있음을 알아챌 수 있다.   
+  
+### 배열은 실체화(reify), 제너릭은 실체화 불가(non-reify) 이다
+**실체화**란, 런타임에 자신의 타입 정보를 인지하고 있는 것이다.  배열은 런타임에도 자신이 넣기로 한 원소의 타입을 인지하고 확인한다.  
+따라서 이전의 예시처럼 Long 배열에 String 을 넣으려고 했을 때, **ArrayStoreException** 에러가 발생했다.  
 
-위 코드에서 ```Collection``` 로타입으로 선언된 ```stamps``` 는 ```Stamp``` 인스턴스만 취급하기 위해 정의되었지만, 실수로 ```Coin``` type 을 넣게 되었을 때 문제없이 실행되지만 컴파일러가 수상하다고 여겨 경고를 주고 끝난다.  
-허나 이후에 꺼내어 형변환 등의 처리를 하게 되었을 때, 런타임 에러가 발생하게 된다.  
+**실체화 불가**란, 런타임에 자신의 타입 정보를 인지하고 있지 않은 것이다.  
+**제너릭은 타입 정보가 런타임엔 제거된다.** 컴파일 단계 후 런타임에선 타입 정보를 알 수 없다. 이는 제너릭과 제너릭 이전의 레거시 코드를 함께 사용할 수 있게 해준 매커니즘 이다.  
+
+<br/>
+
+제너릭은 배열과 함께 쓰일 수 없다. 만약 함께 쓰인다면 어떻게 될까?
 
 <br/>
 
 ``` java
-private final Collection<Stamp> stamps = ...;
+List<String>[] stringLists = new List<String>[1];   // (1)
+List<Integer> intList = List.of(42);                // (2)
+Object[] objects = stringLists;                     // (3)
+objects[0] = intList;                               // (4)
+String s = stringLists[0].get(0);                   // (5)
 ```
-위처럼 제네릭 설정을 해놓으면 실수로 ```Coin``` 을 넣게 되었을 때 컴파일 에러가 발생하여 오류를 사전에 막을 수 있게 된다. 
+1. 제너릭 배열을 생성하는 것이 허용된다고 가정하자 (원래는 Compile Error)
+1. 원소가 한개인 List&#60;Integer> 를 생성한다.
+1. 1 에서 생성한 List&#60;String> 의 배열을 Object 배열에 할당한다. (배열은 공변이므로 문제가 없다)
+1. 2 에서 생성한 List&#60;Integer> 의 인스턴스를 Object 배열의 첫 원소로 저장한다. (제너릭은 소거방식이므로 문제가 없다)
+1. List&#60;String> 인스턴스만 담겠다고 선언한 stringLists 배열에 현재 List<Integer> 인스턴스가 저장되어있는 상태. 따라서, **원소를 꺼낼 때 컴파일러는 자동으로 String 으로 형변환을 하여 ClassCastException 이 발생한다.**  
 
-<br/>
+실제 상황에선 1. 처럼 제너릭과 배열을 함께 쓸 수 있는 상황을 허용해주지 않기 때문에 컴파일 에러로 상황을 방지할 수 있다.   
 
+
+### 비검사 경고를 완전히 제거하고 싶다면, 배열 대신 리스트를 써라
 ``` java
-public static void main(String[] args) {
-    List<String> strings = new ArrayList<>();
-    unsafeAdd(strings, Integer.valueOf(42));
+public class Chooser {
+    private final Object[] choiceArray;
     
-    // ClassCastException 발생
-    String s = strings.get(0);
-}
-
-private static void unsafeAdd(List list, Object o) {
-    list.add(o);
-}
-```
-
-위의 경우도 정상적으로 컴파일이 실행되지만, ```strings.get(0)``` 을 사용하여 원소를 꺼내 강제 형변환이 실행될 때 런타임 에러가 발생하게 된다.  
-이를 위해 ```unsafeAdd``` 에서 ```List``` 대신에 ```List<Object>``` 을 사용하게 되면 아래와 같이 컴파일 에러가 발생하여 문제를 사전에 막을 수 있다.
-```
-java: incompatible types: 
-java.util.List<java.lang.String> cannot be converted to java.util.List<java.lang.Object>
-    unsafeAdd(strings, Integer.valueOf(42);
-         ^
-```
-
-**(주의) List&#60;Object> 의 하위타입으로 List&#60;String> 이 될 수 없다.**
-
-: List&#60;Object> 는 어떤 객체든 넣을 수 있는 List 타입이고, List&#60;String> 은 String 객체만 넣을 수 있는 List 로 둘은 별개의 개념이다.
-
-
-### 비한정적 와일드카드 타입을 사용해라
-> 제네릭 타입을 쓰고 싶지만, 실제 타입이 무엇인지 신경쓰고 싶지 않을 땐 <?> 를 사용하자.
-
-비한정적 와일드카드 타입(Unbounded Wildcard Type) 이란, 제네릭 타입에서 &#60;?> 로 표기되어 있는 것을 말하며, 아직 알려지지 않은 타입을 가르킨다.  
-
-비한정적 와일드카드 타입은 **매개변수 타입에 의존하지 않는 제너릭 클래스의 매서드를 사용할 때**를 위해 쓰인다.   
-``` java
-public static void printList(List<?> list) {
-    Iterator<?> iterator = list.iterator();
-    while(iterator.hasNext()) {
-        System.out.println(iterator.next());
+    public Chooser(Collection choices) {
+        choiceArray = choices.toArray();
+    }
+    
+    public Object choose() {
+        Random rnd = ThreadLocalRandom.current();
+        return choiceArray[rnd.nextInt(choiceArray.length)];
     }
 }
-
-public static void main(String[] args) {
-    List<String> str = new ArrayList<>();
-    str.add("h");
-    str.add("i");
-    printList(str);
-}
 ```
+지금까지의 이야기와 같다. 우선 이 클래스는 사용하면 안되는 로타입을 사용하고 있다.   
+이 클래스를 사용한다면, ```choose``` 메서드를 사용할 때 마다 반환된 Object 를 원하는 타입으로 형변환해야 하며, 런타임에 형변환 오류가 날 가능성을 항상 가지고 있다.  
 
-위는 와일드카드 적절한 사용에 대한 예시이다. `printList` 에선 `List<?> list` 의 타입이 중요한 요소가 아니다. 따라서 어떤 타입이 와일드카드에 해당한다 하더라도 오류가 발생하지 않는다.  
-또한, `List<?>` 은 `List<String>` , `List<Integer>` 등. 모든 타입을 자신의 하위타입으로 취급하기 때문에 어떤 타입의 List 라도 타입을 보존한 채 출력할 수 있다.   
-이는 `List<String>` 이 `List<Object>` 의 하위타입이 아닌 것과는 다르다.   
+이를 제네릭으로 선언해주면서 해결한다고 해도, 비검사 경고는 남게 된다. 그 이후는 개발자가 안정성을 보장한다는 전제 하에 경고를 숨기는 방법이 지금까지의 결론이다.  
 
-다만 주의해야할 사항은, Object 에는 Object 의 하위 타입을 넣을 순 있지만, List<?> 에는 **null 을 제외하고 어떤 타입도 넣을 수 없다.** 이는 와일드카드의 **불변성** 에 관련이 있다.  
+<details>
+    <summary>
+    <u>비검사 경고 결말</u>
+    </summary>
 
-아래는 그에 대한 예시이다. 
+우선 Object 가 아닌 제너릭 &#60;T> 를 사용하도록 코드를 변경한다.
 
-```java
-static int numElementsInCommon(Set<?> s1, Set<?> s2) {
-    int result = 0;
-    for (Object o1 : s1) 
+``` java
+public class Chooser<T> {
+    private final T[] choiceArray;
     
+    public Chooser(Collection<T> choices) {
+        choiceArray = choices.toArray();    // Compile Error
+    }
+    
+    // choose 메서드는 그대로
 }
-```
-비한정적 와일드카드 &#60;?> 는 **어떤 타입이라도 허용하는 범용적인 매개변수이다.** 이를 위해서 와일드카드는 null 을 제외한 어떤 원소의 insert 도 허용하지 않는다.(대신 remove 는 허용한다.)  
-&#60;?> 을 사용하게 되면 Collection&#60;?> 에는 (null 외엔) 어떤 원소도 넣을 수 없어 불변성을 유지할 수 있다. 
-``` java
-Collection<?> collection = new ArrayList<>();
-collection.add(null);   // 가능
-collection.add(1234);   // Compile Error
+
 ```
 
-
-
-### 로타입을 써도 좋은 예
-
-* class 리터럴에는 로타입으로 써야한다  
-: List.class, String[].class, int.class ....
-
-* instanceof 연산자엔 비한정적 와일드카드 타입 외의 제너릭이 적용 불가능
+위 코드를 그대로 컴파일하게 되면 **Object[] 를 T[]로 형변환할 수 없다는 오류** 가 발생한다.   
+이를 해결하기 위해선 아래와 같이 **T[] 로 형변환**을 해주면 된다.  
 
 ``` java
-if (o instanceof Set) {
-    Set<?> s = (Set<?>) o;
-    ...
+choiceArray = (T[]) choices.toArray();
+```
+
+그러면 형변환이 런타임에도 안전할 지 보장할 수 없다는 비검사 경고가 뜬다. 이는 개발자가 안정성을 검증하여 경고를 숨기는 수 밖에 없다.
+
+</details>
+
+하지만, 배열 대신 리스트를 사용하게 되면 위와 같은 결말을 맞이하지 않아도 된다.  
+
+``` java
+public class Chooser<T> {
+    private final List<T> choiceList;
+    
+    public Chooser(Collection<T> choices) {
+        choiceList = new ArrayList<>(choices);  // Object[] 대신에 리스트 사용
+    }
+    
+    public T choose() {
+        Random rnd = ThreadLocalRandom.current();
+        return choiceList.get(rnd.nextInt(choiceList.size()));
+    }
+
 }
 ```
-`instanceof` 의 결과가 `true` 라는 것은, 참조변수가 검사한 타입으로 형변환이 가능하다는 뜻이다. 따라서 `instanceof` 연산자는 비한정적 와일드카드 타입 이외의 매개변수화 타입에는 적용할 수 없다.  
-그리고 로타입과 비한정적 와일드카드타입이 완전히 동일하게 동작하므로 로타입(Raw type) 을 쓰는 편이 더 깔끔하다. 
 
+위 처럼 리스트를 사용하게 되면 오류나 비검사경고 없이 안전하게 컴파일 된다. 
 <br/>
 
 ---
