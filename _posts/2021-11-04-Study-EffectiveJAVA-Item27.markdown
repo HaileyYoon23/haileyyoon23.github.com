@@ -6,7 +6,7 @@ title: "Effective JAVA, Item 27"
 
 subtitle: "비검사 경고를 제거하라"  
 
-categories: Study  
+categories: EffectiveJAVA  
 
 tags: EffectiveJAVA Item27
 

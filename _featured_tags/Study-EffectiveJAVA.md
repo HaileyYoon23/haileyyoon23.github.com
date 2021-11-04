@@ -1,7 +1,7 @@
 ---
 layout: tag-blog
-title: Effective-JAVA
-slug: Effective-JAVA
+title: EffectiveJAVA
+slug: EffectiveJAVA
 category: Study
 menu: false
 order: 1
