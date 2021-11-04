@@ -6,7 +6,7 @@ title: "Effective JAVA, Item 26"
 
 subtitle: "로타입(Raw Type)은 사용하지 말라"  
 
-categories: EffectiveJAVA  
+categories: Study  
 
 tags: EffectiveJAVA Item26
 

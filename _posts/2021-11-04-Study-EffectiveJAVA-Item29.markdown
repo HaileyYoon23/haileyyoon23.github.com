@@ -6,7 +6,7 @@ title: "Effective JAVA, Item 29"
 
 subtitle: "이왕이면 제너릭 타입으로 만들어라"  
 
-categories: EffectiveJAVA  
+categories: Study  
 
 tags: EffectiveJAVA Item29
 

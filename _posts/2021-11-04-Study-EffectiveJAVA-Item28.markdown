@@ -6,7 +6,7 @@ title: "Effective JAVA, Item 28"
 
 subtitle: "배열보다는 리스트를 사용하라"  
 
-categories: EffectiveJAVA  
+categories: Study  
 
 tags: EffectiveJAVA Item28
 
