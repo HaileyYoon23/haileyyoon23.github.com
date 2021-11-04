@@ -26,6 +26,8 @@ header-img: img/life/book_picture.png
 
 잘 부탁한다. 내 블로그야.
 
-
+<br>
+Fin.
+<br>
 
 ---

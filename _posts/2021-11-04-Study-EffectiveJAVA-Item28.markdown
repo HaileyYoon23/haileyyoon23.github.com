@@ -100,8 +100,6 @@ public class Chooser {
 
 #### 비검사 경고 결말
 
-<br>
-
 우선 Object 가 아닌 제너릭 &#60;T> 를 사용하도록 코드를 변경한다.
 
 ``` java
@@ -147,6 +145,10 @@ public class Chooser<T> {
 
 위 처럼 리스트를 사용하게 되면 오류나 비검사경고 없이 안전하게 컴파일 된다. 
 <br/>
+
+<br>
+Fin.
+<br>
 
 ---
 

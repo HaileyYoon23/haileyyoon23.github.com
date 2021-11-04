@@ -7,5 +7,6 @@ order: 10
 
 ## 소개
 
-Kakao BE 엔지니어 입니다.
+Requirement Driven, 
+Kakao SW Developer.
 
